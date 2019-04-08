@@ -17,4 +17,12 @@ public class Group {
     public void addMember(Person person){
         this.members.add(person);
     }
+
+    public ArrayList<Person> getMembers() {
+        return (ArrayList<Person>) members.clone();
+    }
+
+    public Person getSender() {
+        return sender;
+    }
 }

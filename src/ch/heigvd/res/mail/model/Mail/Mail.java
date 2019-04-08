@@ -1,4 +1,6 @@
 package ch.heigvd.res.mail.model.Mail;
+import java.util.ArrayList;
+import ch.heigvd.res.mail.model.prank.Prank;
 
 public class Mail {
     private String mail_from;
@@ -7,6 +9,20 @@ public class Mail {
     private String to;
     private String subject;
     private String text;
+
+    static public ArrayList<Mail> generateMail(Prank p){
+        ArrayList<Mail> allMails = new ArrayList<>();
+        for (Group victimGroup:
+             p.getGroupsToPrank()) {
+            String sender = victimGroup.getSender().getMailAdress();
+            for(Person victim :
+            victimGroup.getMembers()) {
+                Mail newMail = new Mail(sender, victim.getMailAdress(), p.getFakeSender(), victim.getMailAdress(), p.getPrankSubject(), p.getPrankContent());
+                allMails.add(newMail);
+            }
+        }
+        return allMails;
+    }
 
 
     public Mail(String mail_from, String rcpt_to, String from, String to, String subject, String text) {
@@ -17,6 +33,8 @@ public class Mail {
         this.subject = subject;
         this.text = text;
     }
+
+
 
     public String toString(){
         String output = "";
