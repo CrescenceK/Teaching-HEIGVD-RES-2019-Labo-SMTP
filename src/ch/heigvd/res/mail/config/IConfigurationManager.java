@@ -1,8 +1,8 @@
-package ch.heigvd.res.mail.config;
+package config;
 
 import ch.heigvd.res.mail.model.mail.*;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface IConfigurationManager {
 
@@ -29,12 +29,12 @@ public interface IConfigurationManager {
     /**@brief  : return the victims
      * @return : a List of Person
      */
-    public List<Person> getVictims();
+    public ArrayList<Person> getVictims();
 
     /**@brief  : return mails prepared for jokes
-     * @return : a List of mail
+     * @return : a List of Mail
      */
-    public List<Mail> getMails();
+    public ArrayList<Mail> getMails();
 
     /**@Brief : get all properties of the protocol, set in conf.properties
      * @param :filename where properties were set
@@ -47,12 +47,12 @@ public interface IConfigurationManager {
      * @return: a List of Person
      * @throws IOException
      */
-    public List<Person> preparedAdresses (String filename) throws IOException;
+    public ArrayList<Person> preparedAdresses (String filename) throws IOException;
 
     /**@brief : get all mails messages
      * @param : filename, where messages were saved.
-     * @return: a list of mail
+     * @return: a list of Mail
      * @throws IOException
      */
-    public List<Mail> preparedMails(String filename) throws IOException;
+    public ArrayList<Mail> preparedMails(String filename) throws IOException;
 }
