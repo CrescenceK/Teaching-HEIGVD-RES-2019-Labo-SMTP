@@ -1,8 +1,8 @@
 package ch.heigvd.res.mail.model.prank;
 
-import ch.heigvd.res.mail.model.Mail.Group;
-import ch.heigvd.res.mail.model.Mail.Mail;
-import ch.heigvd.res.mail.model.Mail.Person;
+import ch.heigvd.res.mail.model.mail.Group;
+import ch.heigvd.res.mail.model.mail.Mail;
+import ch.heigvd.res.mail.model.mail.Person;
 
 import java.util.ArrayList;
 

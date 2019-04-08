@@ -1,6 +1,6 @@
 package ch.heigvd.res.mail.model.prank;
 
-import ch.heigvd.res.mail.model.Mail.Group;
+import ch.heigvd.res.mail.model.mail.Group;
 
 import java.util.ArrayList;
 

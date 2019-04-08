@@ -1,4 +1,4 @@
-package ch.heigvd.res.mail.model.Mail;
+package ch.heigvd.res.mail.model.mail;
 import java.util.ArrayList;
 
 public class Group {

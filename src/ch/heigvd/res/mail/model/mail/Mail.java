@@ -1,4 +1,4 @@
-package ch.heigvd.res.mail.model.Mail;
+package ch.heigvd.res.mail.model.mail;
 import java.util.ArrayList;
 import ch.heigvd.res.mail.model.prank.Prank;
 
@@ -38,7 +38,7 @@ public class Mail {
 
     public String toString(){
         String output = "";
-        output+="Mail from: " + mail_from + "\n";
+        output+="mail from: " + mail_from + "\n";
         output+="RCPT to: " + rcpt_to + "\n";
         output+="From: " + from + "\n";
         output+="To: " + to + "\n";
