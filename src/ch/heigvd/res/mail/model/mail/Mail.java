@@ -25,6 +25,30 @@ public class Mail {
     }
 
 
+    public String getMail_from() {
+        return mail_from;
+    }
+
+    public String getRcpt_to() {
+        return rcpt_to;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getText() {
+        return text;
+    }
+
     public Mail(String mail_from, String rcpt_to, String from, String to, String subject, String text) {
         this.mail_from = mail_from;
         this.rcpt_to = rcpt_to;

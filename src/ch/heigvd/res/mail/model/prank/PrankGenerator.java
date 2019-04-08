@@ -3,11 +3,13 @@ package ch.heigvd.res.mail.model.prank;
 import ch.heigvd.res.mail.model.mail.Group;
 import ch.heigvd.res.mail.model.mail.Mail;
 import ch.heigvd.res.mail.model.mail.Person;
+import ch.heigvd.res.mail.smtp.SMTPClient;
 
 import java.util.ArrayList;
 
 public class PrankGenerator {
     public static void main(String[] args) {
+        SMTPClient client = new SMTPClient();
         Person s1 = new Person("monsieurprank@heig-vd.ch");
         Person s2 = new Person("monsieurprank2@heig-vd.ch");
 
@@ -35,8 +37,11 @@ public class PrankGenerator {
             Prank p = new Prank(groups, "AHAHAH", "You got pranked", "Batman");
             ArrayList<Mail> result = Mail.generateMail(p);
             for (Mail m:
-                 result)
+                 result) {
                 System.out.println(m);
+                client.sendMail(m);
+            }
+
         } catch (
                 Exception e) {
             System.out.println("erreur");
