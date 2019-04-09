@@ -48,7 +48,7 @@ public class SMTPClient implements ISMTPClient {
             System.out.println(statusFromServ);
 
             // Envoi du premier message
-            os.write(SMTPCommands.EHLO.toString().getBytes());
+            sendToServer(SMTPCommands.EHLO.toString());
 
             while ((in.readLine()).charAt(3) != ' ') {
                 System.out.println(statusFromServ);
@@ -69,7 +69,8 @@ public class SMTPClient implements ISMTPClient {
             String dataContent = SMTPCommands.FROM.addData(m.getFrom());
             dataContent += SMTPCommands.TO.addData(m.getTo());
             dataContent += SMTPCommands.SUBJECT.addData(m.getSubject());
-            dataContent += m.getText() + SMTPCommands.END_DATA;
+            dataContent += m.getText();
+            dataContent += SMTPCommands.END_DATA;
             sendToServer(dataContent);
             statusFromServ = receiveFromServ();
             System.out.println(statusFromServ);
@@ -81,7 +82,8 @@ public class SMTPClient implements ISMTPClient {
                     in.close();
                 if(os != null)
                     os.close();
-                clientSocket.close();
+                if(clientSocket != null)
+                    clientSocket.close();
             } catch (IOException ignored) {
             }
         }
