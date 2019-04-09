@@ -1,13 +1,12 @@
-package config;
+package ch.heigvd.res.mail.config;
 
 import ch.heigvd.res.mail.model.mail.*;
-
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class ConfigurationManager implements config.IConfigurationManager {
+public class ConfigurationManager implements IConfigurationManager {
     private int portSmtp;
     private int numberOfgroup;
     private String subject;
@@ -17,7 +16,7 @@ public class ConfigurationManager implements config.IConfigurationManager {
 
     public ConfigurationManager() throws IOException{
         victims = preparedAdresses("/Configuration/victims.utf8");
-        mails   = preparedPranks("/Configurations/messages.utf8");
+        mails   = preparedMails("/Configurations/messages.utf8");
         properties("/Configuration/config.properties");
     }
 
@@ -47,7 +46,7 @@ public class ConfigurationManager implements config.IConfigurationManager {
     }
 
     @Override
-    public ArrayList <Mail> getMails() {
+    public ArrayList<Mail> getMails() {
         return mails;
     }
 
@@ -82,30 +81,31 @@ public class ConfigurationManager implements config.IConfigurationManager {
     }
 
     @Override
-    public ArrayList<Mail> preparedPranks(String filename) throws IOException {
-        ArrayList<Mail> mails;
+    public ArrayList<Mail> preparedMails(String filename) throws IOException {
+        String subject = null;
+        String fakeSender = null;
 
         try(FileInputStream file = new FileInputStream(filename)){
             InputStreamReader sReader = new InputStreamReader(file, "UTF-8");
 
             try(BufferedReader bReader = new BufferedReader(sReader)){
-                mails = new ArrayList<>();
                 String line = bReader.readLine();
 
                 while(line != null){
                     StringBuilder message = new StringBuilder();
-                    String sub = null;
 
-                    while((line != null) && (!line.equals("=="))){
-                        if(line.indexOf("subject") != -1){
-                            sub = (line.split(":"))[1];
+                    while((line != null) && (!line.equals("******"))){
+                        if(line.indexOf("subject") != -1) {
+                            subject =(line.split(":"))[1];
+                        }else if(line.indexOf("From") != -1){
+                             fakeSender = (line.split(":"))[1];
                         } else {
                             message.append(line);
                             message.append("\r\n");
                             line = bReader.readLine();
                         }
                     }
-                    mails.add(new Mail(sub, message.toString()));
+                    mails.add(new Mail(fakeSender, subject, message.toString()));
                     line = bReader.readLine();
                 }
             }

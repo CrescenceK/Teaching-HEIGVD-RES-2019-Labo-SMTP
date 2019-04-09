@@ -1,4 +1,4 @@
-package config;
+package ch.heigvd.res.mail.config;
 
 import ch.heigvd.res.mail.model.mail.*;
 import ch.heigvd.res.mail.model.prank.Prank;
@@ -33,6 +33,12 @@ public interface IConfigurationManager {
      */
     public ArrayList<Person> getVictims();
 
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Mail> getMails();
+
     /**@Brief : get all properties of the protocol, set in conf.properties
      * @param :filename where properties were set
      * @throws: IOException
@@ -40,16 +46,16 @@ public interface IConfigurationManager {
     public void properties(String filename) throws IOException;
 
     /**@brief : get all mails adresses
-     * @param :filename where vadresses are enumarate
+     * @param :filename where adresses are enumarate
      * @return: a List of Person
      * @throws IOException
      */
     public ArrayList<Person> preparedAdresses (String filename) throws IOException;
 
-    /**@brief : get all pranks
-     * @param : filename, where pranks were saved.
-     * @return: a list of Pranks
+    /**@brief : get all mails
+     * @param : filename, where mails were saved.
+     * @return: a list of mails
      * @throws IOException
      */
-    public ArrayList<Prank> preparedPranks(String filename) throws IOException;
+    public ArrayList<Mail> preparedMails(String filename) throws IOException;
 }

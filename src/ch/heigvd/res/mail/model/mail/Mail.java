@@ -49,15 +49,18 @@ public class Mail {
         return text;
     }
 
-    public Mail(String mail_from, String rcpt_to, String from, String to, String subject, String text) {
-        this.mail_from = mail_from;
-        this.rcpt_to = rcpt_to;
+    public Mail( String from, String subject, String text){
         this.from = from;
-        this.to = to;
         this.subject = subject;
         this.text = text;
     }
 
+    public Mail(String mail_from, String rcpt_to, String from, String to, String subject, String text) {
+        this(from, subject, text);
+        this.mail_from = mail_from;
+        this.rcpt_to = rcpt_to;
+        this.to = to;
+    }
 
 
     public String toString(){
