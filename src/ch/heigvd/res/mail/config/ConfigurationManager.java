@@ -17,7 +17,7 @@ public class ConfigurationManager implements config.IConfigurationManager {
 
     public ConfigurationManager() throws IOException{
         victims = preparedAdresses("/Configuration/victims.utf8");
-        mails   = preparedMails("/Configurations/messages.utf8");
+        mails   = preparedPranks("/Configurations/messages.utf8");
         properties("/Configuration/config.properties");
     }
 
@@ -82,7 +82,7 @@ public class ConfigurationManager implements config.IConfigurationManager {
     }
 
     @Override
-    public ArrayList<Mail> preparedMails(String filename) throws IOException {
+    public ArrayList<Mail> preparedPranks(String filename) throws IOException {
         ArrayList<Mail> mails;
 
         try(FileInputStream file = new FileInputStream(filename)){

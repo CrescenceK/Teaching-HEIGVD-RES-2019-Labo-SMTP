@@ -1,6 +1,8 @@
 package config;
 
 import ch.heigvd.res.mail.model.mail.*;
+import ch.heigvd.res.mail.model.prank.Prank;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,11 +33,6 @@ public interface IConfigurationManager {
      */
     public ArrayList<Person> getVictims();
 
-    /**@brief  : return mails prepared for jokes
-     * @return : a List of Mail
-     */
-    public ArrayList<Mail> getMails();
-
     /**@Brief : get all properties of the protocol, set in conf.properties
      * @param :filename where properties were set
      * @throws: IOException
@@ -49,10 +46,10 @@ public interface IConfigurationManager {
      */
     public ArrayList<Person> preparedAdresses (String filename) throws IOException;
 
-    /**@brief : get all mails messages
-     * @param : filename, where messages were saved.
-     * @return: a list of Mail
+    /**@brief : get all pranks
+     * @param : filename, where pranks were saved.
+     * @return: a list of Pranks
      * @throws IOException
      */
-    public ArrayList<Mail> preparedMails(String filename) throws IOException;
+    public ArrayList<Prank> preparedPranks(String filename) throws IOException;
 }
