@@ -6,8 +6,46 @@ import java.io.*;
 import java.net.Socket;
 
 public class SMTPClient implements ISMTPClient {
+
+    public enum SMTPCommands {
+        //Objets directement construits
+        EHLO ("EHLO Test"+ SMTPClient.term),
+        MAIL_FROM("MAIL FROM: "),
+        RCPT_TO ("RCPT TO: "),
+        DATA("DATA"+SMTPClient.term),
+        FROM("From: "),
+        TO ("To: "),
+        SUBJECT("Subject: "+term+term),
+        END_DATA(term+"."+term),
+        QUIT("QUIT"+SMTPClient.term);
+
+        private String command = "";
+
+        //Constructeur
+        SMTPCommands(String command){
+            this.command = command;
+        }
+
+        public String addData(String d){
+            return command + d + SMTPClient.term;
+        }
+        public String toString(){
+            return command;
+        }
+    }
+
+    static public final String term = "\r\n";
+
+    public Integer detectStatus(String s){
+        if(s.length()<3){
+            return -1;
+        }
+        else {
+            return Integer.parseInt(s.substring(0, 3));
+        }
+    }
+
     public void sendMail(Mail m) {
-        String term = "\r\n";
         Socket clientSocket = null;
         OutputStream os = null;
         InputStream inS = null;
@@ -27,32 +65,28 @@ public class SMTPClient implements ISMTPClient {
             System.out.println(messageFromServer);
 
             // Envoi du premier message
-            String EHLO = "EHLO Obyka" + term;
-            os.write(EHLO.getBytes());
+            os.write(SMTPCommands.EHLO.toString().getBytes());
 
             while ((messageFromServer = in.readLine()).charAt(3) != ' ') {
                 System.out.println(messageFromServer);
             }
 
-            String MAIL_FROM = "MAIL FROM: " + m.getMail_from() + term;
-            os.write(MAIL_FROM.getBytes());
+            os.write(SMTPCommands.MAIL_FROM.addData(m.getMail_from()).getBytes());
             messageFromServer = in.readLine();
             System.out.println(messageFromServer);
 
-            String RCPT_TO = "RCPT TO: " + m.getRcpt_to() + term;
-            os.write(RCPT_TO.getBytes());
+            os.write(SMTPCommands.RCPT_TO.addData(m.getRcpt_to()).getBytes());
             messageFromServer = in.readLine();
             System.out.println(messageFromServer);
 
-            String DATA = "DATA" + term;
-            os.write(DATA.getBytes());
+            os.write(SMTPCommands.DATA.toString().getBytes());
             messageFromServer = in.readLine();
             System.out.println(messageFromServer);
 
-            String dataContent = "From: " + m.getFrom() + term;
-            dataContent += "To: " + m.getTo() + term;
-            dataContent += "Subject: " + m.getSubject() + term + term;
-            dataContent += m.getText() + term + "." + term;
+            String dataContent = SMTPCommands.FROM.addData(m.getFrom());
+            dataContent += SMTPCommands.TO.addData(m.getTo());
+            dataContent += SMTPCommands.SUBJECT.addData(m.getSubject());
+            dataContent += m.getText() + SMTPCommands.END_DATA;
             os.write(dataContent.getBytes());
             messageFromServer = in.readLine();
             System.out.println(messageFromServer);
@@ -60,9 +94,12 @@ public class SMTPClient implements ISMTPClient {
         } catch (IOException ex) {
         } finally {
             try {
-                in.close();
-                inS.close();
-                os.close();
+                if(in != null)
+                    in.close();
+                if(inS != null)
+                    inS.close();
+                if(os != null)
+                    os.close();
                 clientSocket.close();
             } catch (IOException ignored) {
             }
