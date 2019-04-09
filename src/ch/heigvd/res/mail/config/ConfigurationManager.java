@@ -14,10 +14,10 @@ public class ConfigurationManager implements IConfigurationManager {
     private final ArrayList <Person> victims;
     private final ArrayList <Mail> mails ;
 
-    public ConfigurationManager() throws IOException{
-        victims = preparedAdresses("/Configuration/victims.utf8");
-        mails   = preparedMails("/Configurations/messages.utf8");
-        properties("/Configuration/config.properties");
+    public ConfigurationManager(String configFolder) throws IOException{
+        victims = preparedAdresses(configFolder+"/victims.utf8");
+        mails   = preparedMails(configFolder+"/messages.utf8");
+        properties(configFolder+"/config.properties");
     }
 
     @Override
@@ -70,9 +70,9 @@ public class ConfigurationManager implements IConfigurationManager {
 
             try(BufferedReader bReader = new BufferedReader(sReader)){
                 persons = new ArrayList<>();
-                String address = bReader.readLine();
+                String address;
 
-                while(address != null){
+                while((address = bReader.readLine()) != null){
                     persons.add(new Person(address));
                 }
             }
@@ -93,7 +93,6 @@ public class ConfigurationManager implements IConfigurationManager {
 
                 while(line != null){
                     StringBuilder message = new StringBuilder();
-
                     while((line != null) && (!line.equals("******"))){
                         if(line.indexOf("subject") != -1) {
                             subject =(line.split(":"))[1];

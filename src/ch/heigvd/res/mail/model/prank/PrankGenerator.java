@@ -1,5 +1,6 @@
 package ch.heigvd.res.mail.model.prank;
 
+import ch.heigvd.res.mail.config.ConfigurationManager;
 import ch.heigvd.res.mail.config.IConfigurationManager;
 import ch.heigvd.res.mail.model.mail.Group;
 import ch.heigvd.res.mail.model.mail.Mail;
@@ -63,44 +64,37 @@ public class PrankGenerator {
     }
 
 
-     public void main(String[] args) {
-        /*SMTPClient client = new SMTPClient();
-        Person s1 = new Person("monsieurprank@heig-vd.ch");
-        Person s2 = new Person("monsieurprank2@heig-vd.ch");
-
-        Person p1 = new Person("florian.polier@heig-vd.ch");
-        Person p2 = new Person("polier.florian@gmail.com");
-        Person p3 = new Person("mercierjordan@hotmail.com");
-        Person p4 = new Person("test@gmail.com");
-
-        ArrayList<Person> al1 = new ArrayList<>();
-        al1.add(p1);
-        al1.add(p2);
-
-        ArrayList<Person> al2 = new ArrayList<>();
-        al2.add(p3);
-        al2.add(p4);*/
-
-
+     public void sendMails() {
         try {
+            ArrayList<Prank> pranks = generatePranks();
+            ArrayList<Mail> mails = new ArrayList<>();
+            SMTPClient client = new SMTPClient();
+            for (Prank p:
+                    pranks) {
+                for (Group g:
+                     p.getGroupsToPrank()) {
+                    for (Person per:
+                         g.getMembers()) {
+                        mails.add(new Mail(g.getSender().getMailAdress(),per.getMailAdress(),p.getFakeSender(),per.getMailAdress(), p.getPrankSubject(), p.getPrankContent()));
+                    }
+                }
+            }
 
-           ArrayList<Group> groups = new ArrayList<>();
-
-           ArrayList<Prank> pranks = this.generatePranks();
-
-         /*   Group g1 = new Group(s1, al1);
-            Group g2 = new Group(s2, al2);
-            groups.add(g1);
-            groups.add(g2);
-            Prank p = new Prank(groups, "AHAHAH", "You got pranked", "Batman");
-            ArrayList<Mail> result = Mail.generateMail(p);
             for (Mail m:
-                 result) {
-                System.out.println(m);
-                client.sendMail(m); */
-            } catch (Exception e1) {
-            e1.printStackTrace();
+                 mails) {
+                client.sendMail(m);
+            }
+        } catch (Exception e){
+            System.out.println(e.getStackTrace());
         }
+    }
 
+    public static void main(String[] args) {
+        try{
+            PrankGenerator pg = new PrankGenerator(new ConfigurationManager("Configuration"));
+            pg.sendMails();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
