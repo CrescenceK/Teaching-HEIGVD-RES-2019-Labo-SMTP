@@ -15,7 +15,7 @@ public interface ISMTPClient {
     void sendToServer(SMTPClient.SMTPCommands command, String data) throws IOException;
 
     // Should be able to authenticate to a SMTP Server.
-    boolean authenticate(SMTPClient.AuthMethods authMethods);
+    boolean authenticate(SMTPClient.AuthMethods authMethods) throws Exception;
 
 }
 

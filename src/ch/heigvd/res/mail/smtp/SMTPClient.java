@@ -7,8 +7,11 @@ import java.net.Socket;
 import java.util.Base64;
 import java.util.logging.Logger;
 
+import static ch.heigvd.res.utils.HMAC.hmacDigest;
+
 public class SMTPClient implements ISMTPClient {
 
+    // Here are constant flag / value we use
     static public final String NODATA = "NODATA";
     static public final String CRLF = "\r\n";
 
@@ -16,6 +19,7 @@ public class SMTPClient implements ISMTPClient {
     private OutputStream os = null;
     private BufferedReader in = null;
 
+    // Session dependant info
     private String username;
     private String password;
     private String hostname;
@@ -54,9 +58,55 @@ public class SMTPClient implements ISMTPClient {
         return detectStatus(messageFromServer);
     }
 
-    public boolean authenticate(SMTPClient.AuthMethods authMethods){
+    public boolean authenticate(SMTPClient.AuthMethods authMethods) throws Exception {
+        switch (authMethods) {
+            case NO_AUTH:
+                break;
+            case AUTH_LOGIN:
+                sendToServer(SMTPCommands.AUTH_LOGIN, NODATA);
+
+                if (receiveFromServ() != 334)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+
+                String userEncoded = Base64.getEncoder().encodeToString(username.getBytes());
+                String passEncoded = Base64.getEncoder().encodeToString(password.getBytes());
+                sendToServer(SMTPCommands.CONTENT, userEncoded);
+
+                if (receiveFromServ() != 334)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+
+                sendToServer(SMTPCommands.CONTENT, passEncoded);
+
+                if (receiveFromServ() != 235)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+                break;
+
+            case AUTH_CRAM_MD5:
+                sendToServer(SMTPCommands.AUTH_CRAM_MD5, NODATA);
+                String challenge = "";
+                if (detectStatus(challenge = in.readLine()) != 334)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+
+                // Only the challenge part is ripped
+                challenge = challenge.substring(4);
+                // Decoded challenge
+                byte[] tmpChall = Base64.getDecoder().decode(challenge);
+                challenge = new String(tmpChall);
+                // We compute the digest as specified in RFC 2195
+                String digest = hmacDigest(challenge, password, "HmacMD5");
+                String finalResponse = username + " " + digest;
+                finalResponse = Base64.getEncoder().encodeToString(finalResponse.getBytes());
+
+                sendToServer(SMTPCommands.CONTENT, finalResponse);
+                if (receiveFromServ() != 235)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+                break;
+            default:
+                throw new Exception("Authentification not supported");
+        }
         return true;
     }
+
     public void sendMail(Mail m) {
         Socket clientSocket = null;
 
@@ -81,13 +131,16 @@ public class SMTPClient implements ISMTPClient {
 
             // Envoi du premier message
             sendToServer(SMTPCommands.EHLO, NODATA);
-            boolean performAuth = false;
             String answer, capabilities;
+            AuthMethods authMethods = AuthMethods.NO_AUTH;
             while (true) {
                 answer = in.readLine();
                 capabilities = answer.substring(4, answer.length());
-                if (capabilities.equals("AUTH PLAIN LOGIN CRAM-MD5"))
-                    performAuth = true;
+                if (capabilities.startsWith("AUTH") && capabilities.contains("CRAM-MD5"))
+                    authMethods = AuthMethods.AUTH_CRAM_MD5;
+                else if (capabilities.startsWith("AUTH") && capabilities.contains("LOGIN"))
+                    authMethods = AuthMethods.AUTH_LOGIN;
+
                 if (detectStatus(answer) != 250)
                     throw new Exception(ErrorMessages.WRONGSTATUS.toString());
                 if (answer.charAt(3) == ' ')
@@ -95,25 +148,7 @@ public class SMTPClient implements ISMTPClient {
             }
 
             // Si le serveur demande une authentification
-            if (performAuth) {
-
-                sendToServer(SMTPCommands.AUTH_LOGIN, NODATA);
-
-                if (receiveFromServ() != 334)
-                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-
-                String userEncoded = Base64.getEncoder().encodeToString(username.getBytes());
-                String passEncoded = Base64.getEncoder().encodeToString(password.getBytes());
-                sendToServer(SMTPCommands.CONTENT, userEncoded);
-
-                if (receiveFromServ() != 334)
-                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-
-                sendToServer(SMTPCommands.CONTENT, passEncoded);
-
-                if (receiveFromServ() != 235)
-                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-            }
+            authenticate(authMethods);
 
             sendToServer(SMTPCommands.MAIL_FROM, m.getMail_from());
             if (receiveFromServ() != 250) {
@@ -180,17 +215,9 @@ public class SMTPClient implements ISMTPClient {
     }
 
     public enum AuthMethods {
-        AUTH_LOGIN("AUTH LOGIN" + CRLF),
-        AUTH_CRAM_MD5("AUTH CRAM-MD5" + CRLF);
-        private String method = "";
-
-        AuthMethods(String s) {
-            this.method = s;
-        }
-
-        public String toString() {
-            return method;
-        }
+        AUTH_LOGIN,
+        AUTH_CRAM_MD5,
+        NO_AUTH;
     }
 
     public enum SMTPCommands {
