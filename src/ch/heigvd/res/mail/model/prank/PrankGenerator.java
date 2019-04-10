@@ -68,7 +68,7 @@ public class PrankGenerator {
         try {
             ArrayList<Prank> pranks = generatePranks();
             ArrayList<Mail> mails = new ArrayList<>();
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = new SMTPClient("smtp.mailtrap.io", 25, "bb645f48e64664", "3db3a846ab9eac");
             for (Prank p:
                     pranks) {
                 for (Group g:
@@ -79,7 +79,6 @@ public class PrankGenerator {
                     }
                 }
             }
-
             for (Mail m:
                  mails) {
                 client.sendMail(m);
@@ -91,8 +90,8 @@ public class PrankGenerator {
 
     public static void main(String[] args) {
         try{
-            Mail m = new Mail("sdfdsf","sdfdsf","sdfsdf", "dsfdsf", "dsfdsf", "sdfdsf");
-            SMTPClient client = new SMTPClient();
+            Mail m = new Mail("florian.polier@heig-vd.ch","polier.florian@gmail.com","Batman", "polier.florian@gmail.com", "dsfdsf", "sdfdsf");
+            SMTPClient client = new SMTPClient("smtp.mailtrap.io", 25, "bb645f48e64664", "3db3a846ab9eac");
             client.sendMail(m);
         }catch (Exception e){
             e.printStackTrace();

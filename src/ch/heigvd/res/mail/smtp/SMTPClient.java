@@ -4,40 +4,47 @@ import ch.heigvd.res.mail.model.mail.Mail;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 public class SMTPClient implements ISMTPClient {
 
     static public final String NODATA = "NODATA";
-    static public final String term = "\r\n";
+    static public final String CRLF = "\r\n";
 
     private static Logger logger = Logger.getLogger("SMTPClient");
     private OutputStream os = null;
     private BufferedReader in = null;
 
-    public Integer detectStatus(String s) {
+    private String username;
+    private String password;
+    private String hostname;
+    private Integer port;
+
+    public SMTPClient(String hostname, Integer port, String username, String password) {
+        this.hostname = hostname;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+    }
+
+    private Integer detectStatus(String s) {
         logger.info(s);
-        if (s.length() < 3) {
+        if (s.length() < 3)
             return -1;
-        } else {
+        else
             return Integer.parseInt(s.substring(0, 3));
-        }
     }
 
     @Override
     public void sendToServer(SMTPCommands command, String data) throws IOException {
         String realMessage = "";
         try {
-            if (!data.equals(NODATA)) {
-                realMessage = command.addData(data);
-
-            } else {
-                realMessage = command.toString();
-            }
+            realMessage = !data.equals(NODATA) ? command.addData(data) : command.toString();
             logger.info(realMessage);
             os.write(realMessage.getBytes());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }
@@ -47,12 +54,15 @@ public class SMTPClient implements ISMTPClient {
         return detectStatus(messageFromServer);
     }
 
+    public boolean authenticate(SMTPClient.AuthMethods authMethods){
+        return true;
+    }
     public void sendMail(Mail m) {
         Socket clientSocket = null;
 
         try {
             // Connection au serveur
-            clientSocket = new Socket("vps665962.ovh.net", 2525);
+            clientSocket = new Socket("smtp.mailtrap.io", 25);
             // Récupération des flux d'entrée / sortie
             os = clientSocket.getOutputStream();
             InputStream inS = clientSocket.getInputStream();
@@ -71,11 +81,38 @@ public class SMTPClient implements ISMTPClient {
 
             // Envoi du premier message
             sendToServer(SMTPCommands.EHLO, NODATA);
-            String answer;
-            while ((answer = in.readLine()).charAt(3) != ' ') {
-                if (detectStatus(answer) != 250) {
+            boolean performAuth = false;
+            String answer, capabilities;
+            while (true) {
+                answer = in.readLine();
+                capabilities = answer.substring(4, answer.length());
+                if (capabilities.equals("AUTH PLAIN LOGIN CRAM-MD5"))
+                    performAuth = true;
+                if (detectStatus(answer) != 250)
                     throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-                }
+                if (answer.charAt(3) == ' ')
+                    break;
+            }
+
+            // Si le serveur demande une authentification
+            if (performAuth) {
+
+                sendToServer(SMTPCommands.AUTH_LOGIN, NODATA);
+
+                if (receiveFromServ() != 334)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+
+                String userEncoded = Base64.getEncoder().encodeToString(username.getBytes());
+                String passEncoded = Base64.getEncoder().encodeToString(password.getBytes());
+                sendToServer(SMTPCommands.CONTENT, userEncoded);
+
+                if (receiveFromServ() != 334)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
+
+                sendToServer(SMTPCommands.CONTENT, passEncoded);
+
+                if (receiveFromServ() != 235)
+                    throw new Exception(ErrorMessages.WRONGSTATUS.toString());
             }
 
             sendToServer(SMTPCommands.MAIL_FROM, m.getMail_from());
@@ -142,18 +179,34 @@ public class SMTPClient implements ISMTPClient {
         }
     }
 
+    public enum AuthMethods {
+        AUTH_LOGIN("AUTH LOGIN" + CRLF),
+        AUTH_CRAM_MD5("AUTH CRAM-MD5" + CRLF);
+        private String method = "";
+
+        AuthMethods(String s) {
+            this.method = s;
+        }
+
+        public String toString() {
+            return method;
+        }
+    }
+
     public enum SMTPCommands {
         //Objets directement construits
-        EHLO("EHLO Test" + SMTPClient.term),
-        MAIL_FROM("MAIL FROM: "),
-        RCPT_TO("RCPT TO: "),
-        DATA("DATA" + SMTPClient.term),
+        EHLO("EHLO Test" + CRLF),
+        AUTH_LOGIN("AUTH LOGIN" + CRLF),
+        AUTH_CRAM_MD5("AUTH CRAM-MD5" + CRLF),
+        MAIL_FROM("MAIL FROM: <"),
+        RCPT_TO("RCPT TO: <"),
+        DATA("DATA" + CRLF),
         FROM("From: "),
         TO("To: "),
         SUBJECT("Subject: "),
-        END_DATA(term + "." + term),
+        END_DATA(CRLF + "." + CRLF),
         CONTENT(""),
-        QUIT("QUIT" + SMTPClient.term);
+        QUIT("QUIT" + CRLF);
 
         private String command = "";
 
@@ -163,12 +216,14 @@ public class SMTPClient implements ISMTPClient {
         }
 
         public String addData(String d) throws Exception {
-            if (this == EHLO || this == DATA || this == END_DATA || this == QUIT)
+            if (this == EHLO || this == DATA || this == END_DATA || this == QUIT || this == AUTH_LOGIN)
                 throw new Exception("This command does not take args.");
-            if (this == SUBJECT)
-                return command + d + term + term;
+            else if (this == SUBJECT)
+                return command + d + CRLF + CRLF;
+            else if (this == MAIL_FROM || this == RCPT_TO)
+                return command + d + ">" + CRLF;
             else
-                return command + d + term;
+                return command + d + CRLF;
         }
 
         public String toString() {
