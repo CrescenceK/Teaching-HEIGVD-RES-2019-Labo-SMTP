@@ -91,8 +91,9 @@ public class PrankGenerator {
 
     public static void main(String[] args) {
         try{
-            PrankGenerator pg = new PrankGenerator(new ConfigurationManager("Configuration"));
-            pg.sendMails();
+            Mail m = new Mail("sdfdsf","sdfdsf","sdfsdf", "dsfdsf", "dsfdsf", "sdfdsf");
+            SMTPClient client = new SMTPClient();
+            client.sendMail(m);
         }catch (Exception e){
             e.printStackTrace();
         }
