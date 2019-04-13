@@ -24,12 +24,14 @@ public class SMTPClient implements ISMTPClient {
     private String password;
     private String hostname;
     private Integer port;
+    private boolean auth;
 
-    public SMTPClient(String hostname, Integer port, String username, String password) {
+    public SMTPClient(String hostname, Integer port, String username, String password, Boolean auth) {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
         this.password = password;
+        this.auth = auth;
     }
 
     private Integer detectStatus(String s) {
@@ -147,18 +149,17 @@ public class SMTPClient implements ISMTPClient {
                     break;
             }
 
-            // Si le serveur demande une authentification
-            authenticate(authMethods);
+            // Si la config et le serveur demande une authentification
+            if(auth)
+                authenticate(authMethods);
 
             sendToServer(SMTPCommands.MAIL_FROM, m.getMail_from());
-            if (receiveFromServ() != 250) {
+            if (receiveFromServ() != 250)
                 throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-            }
 
             sendToServer(SMTPCommands.RCPT_TO, m.getRcpt_to());
-            if (receiveFromServ() != 250) {
+            if (receiveFromServ() != 250)
                 throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-            }
 
             sendToServer(SMTPCommands.DATA, NODATA);
             Integer serverStatus = receiveFromServ();
@@ -179,9 +180,8 @@ public class SMTPClient implements ISMTPClient {
             sendToServer(SMTPCommands.CONTENT, m.getText());
             sendToServer(SMTPCommands.END_DATA, NODATA);
 
-            if (receiveFromServ() != 250) {
+            if (receiveFromServ() != 250)
                 throw new Exception(ErrorMessages.WRONGSTATUS.toString());
-            }
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

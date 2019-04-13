@@ -11,43 +11,55 @@ public interface IConfigurationManager {
     /**@brief  : return the port number of the server.
      * @return : an Integer.
      */
-    public int getPortSmtp();
+    int getPortSmtp();
 
     /**@brief  : return the number of groups that we have
      * @return : an Integer.
      */
-    public int  getNumberOfGroups();
+    int  getNumberOfGroups();
 
     /**@brief  : return the ip address of server.
      * @return : a String
      */
-    public String getAddressOfServer();
+    String getAddressOfServer();
 
     /**@brief  : return the username. useful while connecting to mailtrap
      * @return
      */
-    public String getUsername();
+    String getUsername();
 
     /**@brief  : return the password. useful while connecting to mailtrap
      * @return : a string
      */
-    public String getPassword();
+    String getPassword();
+
+    /**
+     * returns the boolean which define if an auth must be tried
+     * @return a String
+     */
+    String getAuth();
+
+    /**
+     * return the timeout in sec. between 2 mails
+     * @return a int
+     */
+    int getTimeout();
 
     /**@brief  : return the victims
      * @return : a List of Person
      */
-    public ArrayList<Person> getVictims();
+    ArrayList<Person> getVictims();
 
 
     /**@brief  : return pranks genrate by parsing file message.utf8
      * @return : an ArrayList of Prank
      */
-    public ArrayList<Prank> getPranks();
+    ArrayList<Prank> getPranks();
 
     /**@Brief : get all properties of the protocol, set in conf.properties
      * @param :filename where properties were set
      * @throws: IOException
      */
-    public void properties(String filename) throws IOException;
+    void properties(String filename) throws IOException;
 
 }

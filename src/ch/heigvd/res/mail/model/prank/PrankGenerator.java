@@ -72,6 +72,9 @@ public class PrankGenerator {
         try {
             confManager = new ConfigurationManager("Configuration");
 
+            // auth
+            boolean auth = confManager.getAuth().equals("true");
+
             //pranks
             ArrayList<Prank> pranks = confManager.getPranks();
             PrankGenerator pg = new PrankGenerator(confManager);
@@ -91,10 +94,12 @@ public class PrankGenerator {
 
                 //SMTP customer
                 SMTPClient client = new SMTPClient(confManager.getAddressOfServer(), confManager.getPortSmtp(),
-                        confManager.getUsername(), confManager.getPassword());
+                        confManager.getUsername(), confManager.getPassword(), auth);
 
                 //send mails
                 for (Mail mail : mails) {
+                    // Timeout de 1 seconde pour éviter les erreurs
+                    Thread.sleep(confManager.getTimeout() * 1000);
                     client.sendMail(mail);
                 }
 

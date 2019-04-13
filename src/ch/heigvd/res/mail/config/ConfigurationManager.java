@@ -15,6 +15,8 @@ public class ConfigurationManager implements IConfigurationManager {
     private String addressOfServer;
     private String username;
     private String password;
+    private String auth;
+    private int timeout;
     private final ArrayList <Person> victims;
     private final  ArrayList <Prank> pranks;
 
@@ -50,6 +52,16 @@ public class ConfigurationManager implements IConfigurationManager {
     }
 
     @Override
+    public String getAuth() {
+        return auth;
+    }
+
+    @Override
+    public int getTimeout() {
+        return timeout;
+    }
+
+    @Override
     public ArrayList<Person> getVictims() {
         return victims;
     }
@@ -68,7 +80,9 @@ public class ConfigurationManager implements IConfigurationManager {
         this.subject         = prop.getProperty("subject");
         this.username        = prop.getProperty("username");
         this.password        = prop.getProperty("password");
-        this.portSmtp        = Integer.parseInt(prop.getProperty("smtpPortOfServer"));
+        this.portSmtp        = Integer.parseInt(prop.getProperty("smtpPortOfServer", "25"));
+        this.auth = prop.getProperty("auth","true");
+        this.timeout = Integer.parseInt(prop.getProperty("timeout", "5"));
         this.numberOfgroup  = Integer.parseInt(prop.getProperty("numberOfGroup"));
     }
 
