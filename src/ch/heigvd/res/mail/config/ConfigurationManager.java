@@ -1,22 +1,26 @@
 package ch.heigvd.res.mail.config;
 
 import ch.heigvd.res.mail.model.mail.*;
+import ch.heigvd.res.mail.model.prank.Prank;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
 public class ConfigurationManager implements IConfigurationManager {
+
     private int portSmtp;
     private int numberOfgroup;
     private String subject;
-    private String adressOfServer;
+    private String addressOfServer;
+    private String username;
+    private String password;
     private final ArrayList <Person> victims;
-    private final ArrayList <Mail> mails ;
+    private final  ArrayList <Prank> pranks;
 
     public ConfigurationManager(String configFolder) throws IOException{
         victims = preparedAdresses(configFolder+"/victims.utf8");
-        mails   = preparedMails(configFolder+"/messages.utf8");
+        pranks  = preparedPranks(configFolder+"/messages.utf8");
         properties(configFolder+"/config.properties");
     }
 
@@ -31,13 +35,18 @@ public class ConfigurationManager implements IConfigurationManager {
     }
 
     @Override
-    public String getSubject() {
-        return subject;
+    public String getAddressOfServer() {
+        return addressOfServer;
     }
 
     @Override
-    public String getAdressOfServer() {
-        return adressOfServer;
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -46,8 +55,8 @@ public class ConfigurationManager implements IConfigurationManager {
     }
 
     @Override
-    public ArrayList<Mail> getMails() {
-        return mails;
+    public ArrayList<Prank> getPranks() {
+        return pranks;
     }
 
     @Override
@@ -55,14 +64,16 @@ public class ConfigurationManager implements IConfigurationManager {
         FileInputStream file = new FileInputStream(filename);
         Properties prop = new Properties();
         prop.load(file);
-        this.adressOfServer = prop.getProperty("smtpAdressOfServer");
-        this.subject = prop.getProperty("subject");
-        this.portSmtp = Integer.parseInt(prop.getProperty("smtpPortOfServer"));
-        this.numberOfgroup = Integer.parseInt("numberOfGroup");
+        this.addressOfServer = prop.getProperty("smtpAddressOfServer");
+        this.subject         = prop.getProperty("subject");
+        this.username        = prop.getProperty("username");
+        this.password        = prop.getProperty("password");
+        this.portSmtp        = Integer.parseInt(prop.getProperty("smtpPortOfServer"));
+        this.numberOfgroup  = Integer.parseInt(prop.getProperty("numberOfGroup"));
     }
 
-    @Override
-    public ArrayList<Person> preparedAdresses(String filename) throws IOException {
+    // @Override
+    private ArrayList<Person> preparedAdresses(String filename) throws IOException {
         ArrayList<Person> persons;
 
         try(FileInputStream file = new FileInputStream(filename)){
@@ -80,35 +91,34 @@ public class ConfigurationManager implements IConfigurationManager {
         return persons;
     }
 
-    @Override
-    public ArrayList<Mail> preparedMails(String filename) throws IOException {
-        String subject = null;
-        String fakeSender = null;
+    // @Override
+    private ArrayList<Prank> preparedPranks(String filename) throws IOException {
+        ArrayList<Prank> pranks = new ArrayList<>();
 
         try(FileInputStream file = new FileInputStream(filename)){
             InputStreamReader sReader = new InputStreamReader(file, "UTF-8");
 
             try(BufferedReader bReader = new BufferedReader(sReader)){
-                String line = bReader.readLine();
 
-                while(line != null){
-                    StringBuilder message = new StringBuilder();
-                    while((line != null) && (!line.equals("******"))){
-                        if(line.indexOf("subject") != -1) {
-                            subject =(line.split(":"))[1];
-                        }else if(line.indexOf("From") != -1){
-                             fakeSender = (line.split(":"))[1];
+                String line = bReader.readLine() ;
+                while(line  != null){
+                    Prank p = new Prank();
+                    StringBuilder msgContent = new StringBuilder();
+                    while(line != null && (!line.equals("******"))){
+                        if(line.indexOf("Subject") != -1){
+                            p.setPrankSubject((line.split(":"))[1]);
                         } else {
-                            message.append(line);
-                            message.append("\r\n");
-                            line = bReader.readLine();
+                            msgContent.append(line);
+                            msgContent.append("\r\n");
                         }
+                        p.setPrankContent(msgContent.toString());
+                        line = bReader.readLine();
                     }
-                    mails.add(new Mail(fakeSender, subject, message.toString()));
+                    pranks.add(p);
                     line = bReader.readLine();
                 }
+                return pranks;
             }
         }
-        return mails;
     }
 }

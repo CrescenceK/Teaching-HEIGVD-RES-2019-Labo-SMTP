@@ -10,20 +10,14 @@ public class Mail {
     private String subject;
     private String text;
 
-    static public ArrayList<Mail> generateMail(Prank p){
-        ArrayList<Mail> allMails = new ArrayList<>();
-        for (Group victimGroup:
-             p.getGroupsToPrank()) {
-            String sender = victimGroup.getSender().getMailAdress();
-            for(Person victim :
-            victimGroup.getMembers()) {
-                Mail newMail = new Mail(sender, victim.getMailAdress(), p.getFakeSender(), victim.getMailAdress(), p.getPrankSubject(), p.getPrankContent());
-                allMails.add(newMail);
-            }
-        }
-        return allMails;
+    public Mail(String mail_from, String rcpt_to, String to, String subject, String text) {
+        this.mail_from  = mail_from;
+        this.rcpt_to    = rcpt_to;
+        this.from       = mail_from;
+        this.to         = to;
+        this.subject    = subject;
+        this.text       = text;
     }
-
 
     public String getMail_from() {
         return mail_from;
@@ -48,20 +42,6 @@ public class Mail {
     public String getText() {
         return text;
     }
-
-    public Mail( String from, String subject, String text){
-        this.from = from;
-        this.subject = subject;
-        this.text = text;
-    }
-
-    public Mail(String mail_from, String rcpt_to, String from, String to, String subject, String text) {
-        this(from, subject, text);
-        this.mail_from = mail_from;
-        this.rcpt_to = rcpt_to;
-        this.to = to;
-    }
-
 
     public String toString(){
         String output = "";

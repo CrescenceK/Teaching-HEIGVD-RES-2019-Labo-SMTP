@@ -18,26 +18,31 @@ public interface IConfigurationManager {
      */
     public int  getNumberOfGroups();
 
-    /**@brief  : return the subject of an email
-     * @return : a String
-     */
-    public String getSubject();
-
     /**@brief  : return the ip address of server.
      * @return : a String
      */
-    public String getAdressOfServer();
+    public String getAddressOfServer();
+
+    /**@brief  : return the username. useful while connecting to mailtrap
+     * @return
+     */
+    public String getUsername();
+
+    /**@brief  : return the password. useful while connecting to mailtrap
+     * @return : a string
+     */
+    public String getPassword();
 
     /**@brief  : return the victims
      * @return : a List of Person
      */
     public ArrayList<Person> getVictims();
 
-    /**
-     *
-     * @return
+
+    /**@brief  : return pranks genrate by parsing file message.utf8
+     * @return : an ArrayList of Prank
      */
-    public ArrayList<Mail> getMails();
+    public ArrayList<Prank> getPranks();
 
     /**@Brief : get all properties of the protocol, set in conf.properties
      * @param :filename where properties were set
@@ -45,17 +50,4 @@ public interface IConfigurationManager {
      */
     public void properties(String filename) throws IOException;
 
-    /**@brief : get all mails adresses
-     * @param :filename where adresses are enumarate
-     * @return: a List of Person
-     * @throws IOException
-     */
-    public ArrayList<Person> preparedAdresses (String filename) throws IOException;
-
-    /**@brief : get all mails
-     * @param : filename, where mails were saved.
-     * @return: a list of mails
-     * @throws IOException
-     */
-    public ArrayList<Mail> preparedMails(String filename) throws IOException;
 }

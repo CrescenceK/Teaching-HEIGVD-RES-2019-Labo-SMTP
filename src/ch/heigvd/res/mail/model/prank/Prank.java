@@ -1,26 +1,14 @@
 package ch.heigvd.res.mail.model.prank;
 
-import ch.heigvd.res.mail.model.mail.Group;
-
-import java.util.ArrayList;
-
 public class Prank {
 
-    private String fakeSender;
-    private ArrayList<Group> groupsToPrank;
     private String prankSubject;
     private String prankContent;
 
-    public String getFakeSender(){
-        return fakeSender;
-    }
+    public Prank() {};
 
     public String getPrankSubject() {
         return prankSubject;
-    }
-
-    public ArrayList<Group> getGroupsToPrank() {
-        return groupsToPrank;
     }
 
     public void setPrankSubject(String prankSubject) {
@@ -35,14 +23,4 @@ public class Prank {
         this.prankContent = prankContent;
     }
 
-    public Prank(ArrayList<Group> groupsToPrank, String prankSubject, String prankContent, String fakeSender) {
-        this.groupsToPrank = groupsToPrank;
-        this.prankSubject = prankSubject;
-        this.prankContent = prankContent;
-        this.fakeSender = fakeSender;
-    }
-
-    public void addGroup(Group group){
-        groupsToPrank.add(group);
-    }
 }
