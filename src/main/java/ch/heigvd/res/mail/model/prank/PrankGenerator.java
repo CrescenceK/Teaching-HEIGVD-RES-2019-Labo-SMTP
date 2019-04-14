@@ -1,9 +1,8 @@
-package ch.heigvd.res.mail.model.prank;
+package main.java.ch.heigvd.res.mail.model.prank;
 
-import ch.heigvd.res.mail.config.ConfigurationManager;
-import ch.heigvd.res.mail.config.IConfigurationManager;
-import ch.heigvd.res.mail.model.mail.*;
-import ch.heigvd.res.mail.smtp.SMTPClient;
+import main.java.ch.heigvd.res.mail.config.*;
+import main.java.ch.heigvd.res.mail.model.mail.*;
+import main.java.ch.heigvd.res.mail.smtp.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

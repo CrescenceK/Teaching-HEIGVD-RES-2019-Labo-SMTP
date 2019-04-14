@@ -1,7 +1,7 @@
-package ch.heigvd.res.mail.config;
+package main.java.ch.heigvd.res.mail.config;
 
-import ch.heigvd.res.mail.model.mail.*;
-import ch.heigvd.res.mail.model.prank.Prank;
+import main.java.ch.heigvd.res.mail.model.mail.*;
+import main.java.ch.heigvd.res.mail.model.prank.Prank;
 
 import java.io.*;
 import java.util.ArrayList;

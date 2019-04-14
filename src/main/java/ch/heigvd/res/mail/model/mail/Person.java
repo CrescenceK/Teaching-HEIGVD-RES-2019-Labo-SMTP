@@ -1,4 +1,4 @@
-package ch.heigvd.res.mail.model.mail;
+package main.java.ch.heigvd.res.mail.model.mail;
 
 public class Person {
     public String getMailAdress() {

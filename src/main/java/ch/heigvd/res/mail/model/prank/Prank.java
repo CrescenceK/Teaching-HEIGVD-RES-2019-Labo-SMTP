@@ -1,4 +1,4 @@
-package ch.heigvd.res.mail.model.prank;
+package main.java.ch.heigvd.res.mail.model.prank;
 
 public class Prank {
 

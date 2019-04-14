@@ -1,6 +1,4 @@
-package ch.heigvd.res.mail.model.mail;
-import java.util.ArrayList;
-import ch.heigvd.res.mail.model.prank.Prank;
+package main.java.ch.heigvd.res.mail.model.mail;
 
 public class Mail {
     private String mail_from;

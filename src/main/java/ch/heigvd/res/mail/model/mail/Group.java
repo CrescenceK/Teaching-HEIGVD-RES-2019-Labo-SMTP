@@ -1,5 +1,6 @@
-package ch.heigvd.res.mail.model.mail;
+package main.java.ch.heigvd.res.mail.model.mail;
 import java.util.ArrayList;
+
 
 public class Group {
     private ArrayList<Person> members = new ArrayList<>();
