@@ -11,7 +11,6 @@ import java.util.Collections;
 
 public class PrankGenerator {
     private IConfigurationManager configuration;
-    private ArrayList<Person> persons;
 
     public PrankGenerator(IConfigurationManager configuration) {
         this.configuration = configuration;
@@ -31,20 +30,22 @@ public class PrankGenerator {
 
             //group construction
             for (int i = 0; i < numberOfGroup; ++i) {
+
                 Group group = new Group();
-                int cnt = 0;
-
-                while (cnt < nbPersPerGroup) {
-                    group.addMember(victims.get(i + cnt));
-                    ++cnt;
-                }
-
                 //help to choose a random sender in a group
                 int randomIndex = (int) ((Math.random() * (nbPersPerGroup + 1))) % nbPersPerGroup;
 
-                //the sender is remove from the list of receivers
-                group.setSender(group.getMembers().get(randomIndex));
-                group.getMembers().remove(randomIndex);
+                int cnt = 0;
+                while (cnt < nbPersPerGroup) {
+
+                    //the sender is set and remove from the list of receivers
+                    if(((i+cnt)% nbPersPerGroup) == randomIndex){
+                        group.setSender(victims.get(i));
+                    } else {
+                        group.addMember(victims.get(i+cnt));
+                    }
+                    ++cnt;
+                }
                 groups.add(group);
             }
         }
