@@ -114,7 +114,7 @@ public class SMTPClient implements ISMTPClient {
 
         try {
             // Connection au serveur
-            clientSocket = new Socket("smtp.mailtrap.io", 25);
+            clientSocket = new Socket(hostname,port);
             // Récupération des flux d'entrée / sortie
             os = clientSocket.getOutputStream();
             InputStream inS = clientSocket.getInputStream();

@@ -39,7 +39,7 @@ public class PrankGenerator {
 
                     //the sender is set and remove from the list of receivers
                     if(((i+cnt)% nbPersPerGroup) == randomIndex){
-                        group.setSender(victims.get(i));
+                        group.setSender(victims.get(i+cnt));
                     } else {
                         group.addMember(victims.get(i+cnt));
                     }
