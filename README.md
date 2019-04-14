@@ -34,12 +34,26 @@ Now, you should have access to your mockmock server via your browser on your IP 
 
 To run a prank campaign, you just have to :
 
-first have to clone our project named ***Teaching-HEIGVD-RES-2019-Labo-SMTP***. Then set up Configuration files as you wish. We advise to use a mock server to test the programm first. You can also connect directly with another server, you just have to change the field ```smtpAddressOfServer``` int the file ```Configuration\config.properties.``` In the same file, you can also You can also choose the number of group, the username and the password(if you decided to use smtp.mailtrap.io). The  field ```timeout``` specify time to wait between two mails send. Otherwise mails will be considered as a spam. You can also set files of message and victims, to choose what you want to send, and to who.
-Finally, just open the project with an IDE and run the ```Prankgenerator.java.```
+- clone our repo
+- compile it with `maven clean install`(root project folder)
+- go in target/, take the jar file with launcher in its name
+- copy it somewhere else where you want to launch the project from
+- at the same level, create a `Configuration` folder with this tree      ![](figures/hierarchy.PNG)  
+configuration must follow these guidelines:  
+`victims`  
+![](figures/victims.PNG)  
+  
+`message`  
+![](figures/messages.PNG)
+
+`properties`
+![](figures/properties.PNG)  In the properties files you may find some interesting settings. `Timeout` allows you to set (sec) a timeout between each mail to avoid getting blacklisted.  `auth` (true|false) tells to the client if it should try to authentificate to SMTPServers. `numberOfGroup` tells to the client how many groups the victims should be sorted in. Remember that your groups must contain at least 3 person (2 victims and 1 sender)
+
 
 ## A description of your implementation
 
-  We have separate our code into 2 principals package. ```mail``` and ```utils```.
+  We have separate our code into 2 principals package. ```mail``` and ```utils```.  
+  `utils` contains tool code for authentification. 
   the mail package contains three packages:
   
   ```config```
@@ -70,8 +84,8 @@ Finally, just open the project with an IDE and run the ```Prankgenerator.java.``
   
   ```smtp```
   
-- ISMTPClient.java: is the interface of the client smtp that bind it to implement a "sendMail" method, this interface also contains SMTP commands.
-- SMTPClient.java: represents the SMTP client which implements the interface ISmtpClient, this class allows to send emails.
+- ISMTPClient.java: is the interface of the client smtp that bind it to implement a "sendMail" method, this interface also contains methods to send and receive data from a SMTP server.
+- SMTPClient.java: represents the SMTP client which implements the interface ISmtpClient, this class allows to send emails, and detect which auth. method it should use, based on RFC. Only SMTP Commands are allowed to be sent to the server. 
 
     ![](figures/DiagramPackageSMTP.PNG)
 
