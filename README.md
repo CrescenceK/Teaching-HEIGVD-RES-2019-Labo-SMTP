@@ -53,7 +53,9 @@ configuration must follow these guidelines:
 ![](figures/messages.PNG)
 
 `properties`
-![](figures/properties.PNG)  In the properties files you may find some interesting settings. `Timeout` allows you to set (sec) a timeout between each mail to avoid getting blacklisted.  `auth` (true|false) tells to the client if it should try to authentificate to SMTPServers. `numberOfGroup` tells to the client how many groups the victims should be sorted in. Remember that your groups must contain at least 3 person (2 victims and 1 sender)
+![](figures/properties.PNG)  
+  
+In the properties files you may find some interesting settings. `Timeout` allows you to set (sec) a timeout between each mail to avoid getting blacklisted.  `auth` (true|false) tells to the client if it should try to authentificate to SMTPServers. `numberOfGroup` tells to the client how many groups the victims should be sorted in. Remember that your groups must contain at least 3 person (2 victims and 1 sender)
 
 
 ## A description of your implementation
