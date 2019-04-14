@@ -38,12 +38,18 @@ To run a prank campaign, you just have to :
 - compile it with `maven clean install`(root project folder)
 - go in target/, take the jar file with launcher in its name
 - copy it somewhere else where you want to launch the project from
-- at the same level, create a `Configuration` folder with this tree      ![](figures/hierarchy.PNG)  
-configuration must follow these guidelines:  
-`victims`  
+- at the same level, create a `Configuration` folder with this tree  
+  
+  ![](figures/hierarchy.PNG)
+    
+configuration must follow these guidelines:
+  
+`victims`
+  
 ![](figures/victims.PNG)  
   
-`message`  
+`message`
+  
 ![](figures/messages.PNG)
 
 `properties`
