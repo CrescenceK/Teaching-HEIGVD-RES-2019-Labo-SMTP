@@ -1,0 +1,14 @@
+ch\heigvd\res\mail\model\mail\Group.class
+ch\heigvd\res\mail\smtp\SMTPClient$SMTPCommands.class
+ch\heigvd\res\mail\model\prank\Prank.class
+ch\heigvd\res\mail\smtp\SMTPClient$1.class
+ch\heigvd\res\mail\smtp\SMTPClient$AuthMethods.class
+ch\heigvd\res\mail\config\ConfigurationManager.class
+ch\heigvd\res\mail\model\mail\Mail.class
+ch\heigvd\res\mail\smtp\ISMTPClient.class
+ch\heigvd\res\mail\smtp\SMTPClient.class
+ch\heigvd\res\mail\model\prank\PrankGenerator.class
+ch\heigvd\res\mail\model\mail\Person.class
+ch\heigvd\res\mail\config\IConfigurationManager.class
+ch\heigvd\res\mail\smtp\SMTPClient$ErrorMessages.class
+ch\heigvd\res\utils\HMAC.class
